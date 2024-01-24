@@ -1,0 +1,20 @@
+- name: Copy Jenkins
+  ansible.builtin.copy:
+    src: helm/
+    dest: helm
+
+- name: Existing Helm Release
+  shell: helm list --short | grep ^jenkins
+  register: release
+  become: false
+  ignore_errors: true
+  
+- name: Install Jenkins
+  ansible.builtin.shell: helm install jenkins helm/jenkins --set workernode_hostname="{{ workernode_hostname }}"
+  become: false
+  when: release.stdout == ""
+
+- name: Upgrade Jenkins
+  ansible.builtin.shell: helm upgrade jenkins helm/jenkins --set workernode_hostname="{{ workernode_hostname }}"
+  become: false
+  when: release.stdout != ""

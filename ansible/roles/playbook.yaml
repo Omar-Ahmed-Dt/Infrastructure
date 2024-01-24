@@ -1,0 +1,5 @@
+- name: Bastion Playbook
+  hosts: all
+  roles:
+    - configure_bastion
+    - jenkins

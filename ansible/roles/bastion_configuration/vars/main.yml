@@ -1,0 +1,57 @@
+packages:
+  - { package_name: "unzip", package_state: "latest" }
+  - { package_name: "mysql-client-core-8.0", package_state: "latest" }
+
+binaries:
+  - {
+      binary_url: "https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl",
+      binary_dest: "/usr/local/bin",
+    }
+  - {
+      binary_url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip",
+      binary_dest: "/tmp",
+    }
+  - {
+      binary_url: "https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3",
+      binary_dest: "/tmp/get_helm.sh",
+    }
+
+files_mode:
+  - { path: "/usr/local/bin/kubectl", mode: "0755" }
+  - { path: ".aws/kubeconfig.sh", mode: "0755" }
+  - { path: "/tmp/get_helm.sh", mode: "0755" }
+
+files_archive:
+  - { src: "/tmp/awscli-exe-linux-x86_64.zip", dest: "/tmp" }
+
+script_files:
+  - { script: "/tmp/aws/install" }
+  - { script: "/tmp/get_helm.sh" }
+
+create_files:
+  - { path: ".aws", type: "directory" }
+
+templates:
+  - { src: "credentials.j2", dest: ".aws/credentials" }
+  - { src: "kubeconfig.j2", dest: ".aws/kubeconfig.sh" }
+
+cluster_name: ""
+region: "us-east-1"
+access_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+          63346530663239356663393961306333653965366464396264616638303261393164366561636164
+          6661633234383730323964333566393466666137393465300a316635633530656632613762313364
+          31363731343132363863626463323430393135363166376539393265646332363362666334323762
+          6133396164303466390a653430666336366461393534353661336536643732333537656231396431
+          39613763316162666261313163656430353832316564663835316433363031383465666632313865
+          3636383161333839646139326632623738306334343832353939
+secret_key: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+          66623562653838386232333337616261313430653463366164353337633531623736643237653763
+          6635303434396632613963316132633232636665643834320a636330663035393831396666636662
+          35643164383636353738316531393766653966663130663638366562333038313964636364366664
+          3233376232353063360a303833643131346132383134366161373363366335366235626533376434
+          35623037326164346630386334666363346263633939366632313664336363653764643565346564
+          62663738613431643631373366623930383531623237313635306661313235393039386337326537
+          39643430653736623062306132616532646130353163393066613632343365346161666431383135
+          37393338346562396139

@@ -1,0 +1,46 @@
+- name: Install Packages
+  apt:
+    name: "{{ item.package_name }}"
+    state: "{{ item.package_state }}"
+    update_cache: yes
+  loop: "{{ packages }}"
+
+- name: Download External Binaries
+  get_url:
+    url: "{{ item.binary_url }}"
+    dest: "{{ item.binary_dest }}"
+  loop: "{{ binaries }}"
+
+- name: Create Files And Directories
+  file:
+    path: "{{ item.path }}"
+    state: "{{ item.type }}"
+  loop: "{{ create_files }}"
+
+- name: Copy Files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop: "{{ templates }}"
+
+- name: Change Files Mode
+  file:
+    path: "{{ item.path }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ files_mode }}"
+
+- name: Unarchive Files
+  unarchive:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    remote_src: yes
+  loop: "{{ files_archive }}"
+
+- name: Run Script Files
+  shell: "{{ item.script }}"
+  loop: "{{ script_files }}"
+  ignore_errors: true
+
+- name: Update Kubeconfig
+  shell: ".aws/kubeconfig.sh"
+  become: false
