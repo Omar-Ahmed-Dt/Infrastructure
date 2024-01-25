@@ -19,7 +19,7 @@ then
     exit 1
 fi
 
-cat > ansible/inventory <<EOF
+cat <<EOF > ansible/inventory
 [bastion]
 $bastion_host_ip
 EOF
